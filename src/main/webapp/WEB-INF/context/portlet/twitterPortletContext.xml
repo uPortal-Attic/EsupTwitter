@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!-- Annotations Configuration 	-->
+    <context:annotation-config/>
+    <context:component-scan base-package="org.esupportail.twitter.web"/>
+
+	<bean id="marshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<property name="aliases">
+			<map>
+				<entry key="statuses" value="java.util.ArrayList" />			
+				<entry key="status" value="org.esupportail.twitter.beans.Status" />		
+				<entry key="user" value="org.esupportail.twitter.beans.User" />	
+			</map>
+		</property>
+		<property name="omittedFields">
+			<map>
+				<entry key="org.esupportail.twitter.beans.User" value="protected"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="httpClientFactory" class="org.springframework.http.client.CommonsClientHttpRequestFactory"/>
+    
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		
+		<constructor-arg ref="httpClientFactory"/>
+    
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+					<property name="marshaller" ref="marshaller" />
+					<property name="unmarshaller" ref="marshaller" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

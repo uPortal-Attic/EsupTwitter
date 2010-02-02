@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app
+    xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+    version="1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
+                        http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+    <portlet>
+        <portlet-name>EsupTwitter</portlet-name>
+        <display-name xml:lang="fr">EsupTwitter Portlet</display-name>
+        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+        <init-param>
+            <name>contextConfigLocation</name>
+            <value>WEB-INF/context/portlet/twitterPortletContext.xml</value>
+        </init-param>
+        <expiration-cache>0</expiration-cache>
+        <supports>
+            <mime-type>text/html</mime-type> 
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+            <portlet-mode>HELP</portlet-mode>
+            <portlet-mode>ABOUT</portlet-mode>
+        </supports>
+        <supported-locale>fr</supported-locale>
+        <portlet-info>
+            <title>EsupTwitter Portlet</title>
+            <short-title>EsupTwitter</short-title>
+            <keywords>EsupTwitter</keywords>
+        </portlet-info>
+        
+        <portlet-preferences>
+            <preference>
+                <name>twitterUsername</name>
+                <value>lavillederouen</value>
+            </preference>
+        </portlet-preferences>
+    
+    </portlet>
+
+</portlet-app>
