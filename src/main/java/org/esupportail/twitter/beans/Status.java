@@ -1,6 +1,5 @@
 package org.esupportail.twitter.beans;
 
-import java.util.List;
 
 
 public class Status {
@@ -16,6 +15,8 @@ public class Status {
 	  private String in_reply_to_screen_name;
 	  private User user;
 	  private String geo;
+	  private String  coordinates;
+	  private String place;
 	  private String contributors;
 	  private Status retweeted_status;
 	  
@@ -97,5 +98,16 @@ public class Status {
 	public void setRetweeted_status(Status retweetedStatus) {
 		retweeted_status = retweetedStatus;
 	}
-
+	public String getCoordinates() {
+		return coordinates;
+	}
+	public void setCoordinates(String coordinates) {
+		this.coordinates = coordinates;
+	}
+	public String getPlace() {
+		return place;
+	}
+	public void setPlace(String place) {
+		this.place = place;
+	}
 }
