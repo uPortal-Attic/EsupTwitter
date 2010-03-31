@@ -49,21 +49,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
-    
-    <servlet>
-      <servlet-name>EsupTwitter</servlet-name>
-      <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
-      <init-param>
-	<param-name>portlet-name</param-name>
-	<param-value>EsupTwitter</param-value>
-      </init-param>
-      <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-      <servlet-name>EsupTwitter</servlet-name>
-      <url-pattern>/PlutoInvoker/EsupTwitter</url-pattern>
-    </servlet-mapping>
+    <!-- [INSERT JSPC FRAGMENT HERE] -->
 
     <servlet-mapping>
         <servlet-name>ViewRendererServlet</servlet-name>
