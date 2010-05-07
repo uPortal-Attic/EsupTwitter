@@ -11,7 +11,7 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.esupportail.twitter.web"/>
 
-	<bean id="marshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+	<bean id="marshaller" class="org.esupportail.twitter.xstream.EsupXStreamMarshaller">
 		<property name="aliases">
 			<map>
 				<entry key="statuses" value="java.util.ArrayList" />			
