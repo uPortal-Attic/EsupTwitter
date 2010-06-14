@@ -112,7 +112,7 @@ public class TwitterController {
 	}
     
 
-    @RequestMapping(params = {"action=setTwitterUsername"})
+    @RequestMapping(value = {"EDIT"}, params = {"action=setTwitterUsername"})
     public void setTwitterUsername(
             @RequestParam(value = "twitterUsername", required = true) String twitterUsername,
             @RequestParam(value = "twitterPassword", required = false) String twitterPassword,
