@@ -10,7 +10,7 @@
 
   <div class="portlet-section-body">
     <p>
-      Problem. Are you sure that username and password are ok ?
+      Problem. Are you sure that username or your twitter pin is ok ?
     </p>
   </div>
 

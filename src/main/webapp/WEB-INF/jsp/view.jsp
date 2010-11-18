@@ -2,10 +2,6 @@
 
 <portlet:renderURL var="renderRefreshUrl" />
 
-<a href="${renderRefreshUrl}">
-  <spring:message code="view.refresh" />
-</a>
-
 <div class="portlet-title">
   <h2>
     <img height="80px" src="${user.profile_image_url}" alt="${user.name}" />

@@ -26,4 +26,5 @@
     
 
     <bean id="requiredAnnotationBeanPostProcessor" class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+    
 </beans>

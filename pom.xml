@@ -44,35 +44,17 @@
 	<groupId>org.esupportail</groupId>
 	<artifactId>esup-commons-springmvc-portlet</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging-api</artifactId>
+	</exclusion>
+      </exclusions>
       </dependency>
 
 
         <!-- ===== Compile Time Dependencies ============================== -->
         <!-- the slf4j commons-logging replacement -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl104-over-slf4j</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- the other slf4j jars -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- using log4j as backend -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -80,7 +62,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -88,7 +69,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -96,14 +76,12 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
             <version>4.01</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
@@ -111,7 +89,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -126,7 +103,6 @@
           <type>jar</type>
           <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.pluto</groupId>
             <artifactId>pluto-taglib</artifactId>
@@ -140,7 +116,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -172,7 +147,31 @@
         	<groupId>commons-httpclient</groupId>
         	<artifactId>commons-httpclient</artifactId>
         	<version>3.1</version>
+        		      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging-api</artifactId>
+	</exclusion>
+      </exclusions>
         </dependency>
+        <dependency>
+        	<groupId>org.scribe</groupId>
+        	<artifactId>scribe</artifactId>
+        	<version>1.0.7</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-jcl</artifactId>
+        	<version>1.6.1</version>
+        		      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging-api</artifactId>
+	</exclusion>
+      </exclusions>
+        </dependency>
+        <!-- the other slf4j jars -->
+        <!-- using log4j as backend -->
 
 
         <!-- ===== Runtime Dependencies ================================== -->

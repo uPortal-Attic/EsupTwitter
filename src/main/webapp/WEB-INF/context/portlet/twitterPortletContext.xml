@@ -44,5 +44,6 @@
 		</property>
 	</bean>
 
+	<import resource="twitterConfig.xml"/>
 
 </beans>
