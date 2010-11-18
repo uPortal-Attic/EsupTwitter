@@ -1,36 +1,34 @@
+<%--
+
+    Copyright (C) 2010 Esup Portail http://www.esup-portail.org
+    Copyright (C) 2010 UNR RUNN http://www.unr-runn.fr
+    @Author (C) 2010 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+--%>
+
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
 <div class="portlet-title">
   <h2>
-    About
+    <spring:message code="about.title"/>
   </h2>
 </div>
 
 <div class="portlet-section">
 
   <div class="portlet-section-body">
-    <p>
-      The portlet EsupTwitter is initially developed by the UNR RUNN (universities of Normandy in France) -
-      <a href="http://www.unr-runn.fr/">
-        http://www.unr-runn.fr/
-      </a>
-      .
-    </p>
-    <p>
-      The RUNN works woth EsupPortail Consrtitum -
-      <a href="http://www.esup-portail.org">
-        http://www.esup-portail.org
-      </a>
-      .
-    </p>
-    <p>
-      This portlet allows to display twitters timelines -
-      <a href="http://twitter.com">
-        http://twitter.com
-        <a.>
-        </a.>
-      </a>
-    </p>
+     <spring:message code="about.description"/>
   </div>
 
 </div>

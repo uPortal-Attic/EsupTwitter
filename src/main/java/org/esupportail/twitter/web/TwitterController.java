@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2010 Esup Portail http://www.esup-portail.org
+ * Copyright (C) 2010 UNR RUNN http://www.unr-runn.fr
+ * @Author (C) 2010 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.esupportail.twitter.web;
 
 import java.io.StringReader;
@@ -159,15 +176,35 @@ public class TwitterController implements InitializingBean {
     @RequestMapping("EDIT")
 	public ModelAndView renderEditView(RenderRequest request, RenderResponse response) throws Exception {
         final PortletPreferences prefs = request.getPreferences();
-		ModelMap model = new ModelMap("twitterUsername", prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME));
-		model.put("isOAuthEnabled", this.isOAuthEnabled());
-		if(this.isOAuthEnabled()) {
+        ModelMap model = new ModelMap();
+        if(this.isOAuthEnabled()) {
 			Token requestToken = service.getRequestToken();
 			String twitterAccessToken = requestToken.getToken();
 			String twitterAccessTokenSecret = requestToken.getSecret();
 			model.put("twitterAccessToken", twitterAccessToken);
 			model.put("twitterAccessTokenSecret", twitterAccessTokenSecret);
 		}
+        
+        String currentTwitterUsername = prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME);
+    	String connectedMode = "anonymous";
+        
+    	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
+    	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
+    	if(twitterUserToken!=null) {
+    		Token accessToken = new Token(twitterUserToken, twitterUserSecret);
+    		String twitterUserUrl = "http://api.twitter.com/1/account/verify_credentials.xml";
+    		String responseBodyUser = requestTwitterUrl(accessToken,
+    					twitterUserUrl);
+    		User user = (User) marshaller.unmarshal(new StreamSource(
+    					new StringReader(responseBodyUser.toString())));
+    		currentTwitterUsername = user.getName();
+    		connectedMode = "connected";
+    	}
+    	
+		model.put("isOAuthEnabled", this.isOAuthEnabled());
+		model.put("currentTwitterUsername", currentTwitterUsername);
+		model.put("connectedMode", connectedMode);
+		
 		return new ModelAndView("edit", model);
 	}
     
@@ -206,12 +243,21 @@ public class TwitterController implements InitializingBean {
     	Scanner in = new Scanner(System.in);
     	Verifier verifier = new Verifier(twitterPin);
     	Token requestToken = new Token(twitterAccessToken, twitterAccessTokenSecret);
-    	Token accessToken = service.getAccessToken(requestToken, verifier);
     	
-    	prefs.setValue(PREF_TWITTER_USERNAME, "");
-    	prefs.setValue(PREF_TWITTER_USER_TOKEN, accessToken.getToken());
-    	prefs.setValue(PREF_TWITTER_USER_SECRET, accessToken.getSecret());
-    	prefs.store();
+    	Token accessToken = null;
+    	try {
+    		accessToken = service.getAccessToken(requestToken, verifier);
+    	} catch (Exception ex) {
+    		log.info("pb retrieving accessToken : maybe the user put a wrong pin code");
+    		log.debug("exception when retrieving accessToken : " + ex.getMessage(), ex);
+    	}
+    	
+    	if(accessToken != null) {
+    		prefs.setValue(PREF_TWITTER_USERNAME, "");
+    		prefs.setValue(PREF_TWITTER_USER_TOKEN, accessToken.getToken());
+    		prefs.setValue(PREF_TWITTER_USER_SECRET, accessToken.getSecret());
+    		prefs.store();
+    	}
     	
     	return;
 	}
