@@ -4,7 +4,7 @@
     <groupId>org.esupportail</groupId>
     <artifactId>EsupTwitter</artifactId>
     <packaging>war</packaging>
-    <version>0.1</version>
+    <version>0.5</version>
     
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines of twitter.com</description>
