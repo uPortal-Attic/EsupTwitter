@@ -23,9 +23,11 @@
 
 <div class="portlet-title">
   <h2>
-    <img height="80px" src="${user.profile_image_url}" alt="${user.name}" />
+  	<a href="http://twitter.com/${user.screen_name}" target="_blank">
+    	<img height="80px" src="${user.profile_image_url}" alt="${user.name}" />
+    </a>
     ${user.name}, ${user.location} -
-    <a href="${user.url}">
+    <a href="${user.url}" target="_blank">
       ${user.url}
     </a>
   </h2>

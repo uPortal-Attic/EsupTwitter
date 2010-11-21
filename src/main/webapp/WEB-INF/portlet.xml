@@ -53,6 +53,10 @@
                 <name>twitterUsername</name>
                 <value>lavillederouen</value>
             </preference>
+            <preference>
+                <name>twitterTweetsNumber</name>
+                <value>7</value>
+            </preference>
         </portlet-preferences>
     
     </portlet>

@@ -25,7 +25,14 @@
   </h2>
 </div>
 
-<h3>${currentTwitterUsername} [${connectedMode}]</h3>
+ <c:choose>
+  <c:when test="${connectedMode}">
+	<spring:message code="edit.info.connected.description" arguments="${currentTwitterUsername}"/>
+  </c:when>
+  <c:otherwise>
+  	<spring:message code="edit.info.anonymous.description" arguments="${currentTwitterUsername}"/>
+  </c:otherwise>
+ </c:choose>
 
 <hr/>
 
@@ -61,7 +68,7 @@
   
   <form id="${n}setTwitterPin" class="setTwitterPin" action="${setTwitterPin}" method="post">
      <div>
- 	 	<a target="_blank" href="https://twitter.com/oauth/authorize?oauth_token=${twitterAccessToken}">Get PIN from twitter</a>
+ 	 	<a target="_blank" href="https://twitter.com/oauth/authorize?oauth_token=${twitterAccessToken}"><spring:message code="edit.get.pin.link"/></a>
    		 <p>
      		 <label class="portlet-form-label">
      		   <spring:message code="edit.pin"/>
@@ -80,6 +87,25 @@
   
   </c:if>
 
+  <portlet:actionURL var="setTwitterTweetsNumber">
+    <portlet:param name="action" value="setTwitterTweetsNumber"/>
+  </portlet:actionURL>
+  
+  <form id="${n}setTwitterTweetsNumber" class="setTwitterTweetsNumber" action="${setTwitterTweetsNumber}" method="post">
+     <div>
+   		 <p>
+     		 <label class="portlet-form-label">
+     		   <spring:message code="edit.tweetsNumber"/>
+     		   :
+     		 </label>
+   		 </p>
+   		 <input type="text" name="twitterTweetsNumber" class="portlet-form-input-field" value="${twitterTweetsNumber}"/>
+     	 <spring:message var="setTwitterTweetsNumber" code="edit.set.tweetsNumber.button"/>
+  	  </div>
+  	<input type="submit" value="${setTwitterTweetsNumber}" class="portlet-form-button"/>
+  </form>
+
+  <hr/>
  
 
 <portlet:renderURL var="formDoneAction" portletMode="VIEW"/>

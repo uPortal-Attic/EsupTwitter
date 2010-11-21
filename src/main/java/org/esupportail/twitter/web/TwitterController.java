@@ -32,6 +32,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.CatchTag;
 import org.esupportail.twitter.beans.OAuthTwitterConfig;
 import org.esupportail.twitter.beans.Status;
 import org.esupportail.twitter.beans.User;
@@ -56,9 +57,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.portlet.ModelAndView;
 
-/**
- * @author Vincent Bonamy
- */
 @Controller
 public class TwitterController implements InitializingBean {
 
@@ -70,6 +68,9 @@ public class TwitterController implements InitializingBean {
     
     private static final String PREF_TWITTER_USER_TOKEN = "twitterUserToken";
     private static final String PREF_TWITTER_USER_SECRET = "twitterUserSecret";
+    
+    private static final String PREF_TWITTER_TWEETS_NUMBER = "twitterTweetsNumber";
+    
     
     @Autowired
     protected OAuthTwitterConfig oAuthTwitterConfig;
@@ -126,13 +127,24 @@ public class TwitterController implements InitializingBean {
     	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
     	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
     	
+    	int tweetsNumber = (new Integer(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"))).intValue();	
+    	
     	if(!this.isOAuthEnabled() || !(twitterUserToken != null && StringUtils.hasLength(twitterUserToken)) ) {
     		// get simple username timeline (anonymous connection -> restTemplate can be used)
     		try {
     			User user = restTemplate.getForObject("http://api.twitter.com/1/users/show/{username}.xml", User.class, twitterUsername);
     			List<Status> statusList = restTemplate.getForObject("http://api.twitter.com/1/statuses/user_timeline.xml?id={username}", ArrayList.class, twitterUsername);
+    			if(tweetsNumber == -1)
+    				tweetsNumber = statusList.size();
+    			else 
+    				tweetsNumber = Math.min(tweetsNumber, statusList.size());
+    			statusList = statusList.subList(0, tweetsNumber);
+    			
     			model.put("user", user);
     			model.put("statusList", statusList);
+    			
+    			response.setTitle("Twitter " + user.getScreen_name());
+    			
     		} catch(HttpClientErrorException e) {
     			return new ModelAndView("error", model);
     		}
@@ -155,9 +167,17 @@ public class TwitterController implements InitializingBean {
     			List<Status> statusList = (List<Status>) marshaller
     			.unmarshal(new StreamSource(new StringReader(
     					responseBodyStatusList.toString())));
+    			if(tweetsNumber == -1)
+    				tweetsNumber = statusList.size();
+    			else 
+    				tweetsNumber = Math.min(tweetsNumber, statusList.size());
+    			statusList = statusList.subList(0, tweetsNumber);
 
     			model.put("user", user);
     			model.put("statusList", statusList);
+    			
+    			response.setTitle("Twitter " + user.getScreen_name());
+    			
     		} else {
     			return new ModelAndView("error", model);
     		}
@@ -186,10 +206,13 @@ public class TwitterController implements InitializingBean {
 		}
         
         String currentTwitterUsername = prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME);
-    	String connectedMode = "anonymous";
-        
+    	boolean connected = false;
+ 
     	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
-    	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
+    	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);
+    	
+    	String twitterTweetsNumber = prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1");
+    	
     	if(twitterUserToken!=null) {
     		Token accessToken = new Token(twitterUserToken, twitterUserSecret);
     		String twitterUserUrl = "http://api.twitter.com/1/account/verify_credentials.xml";
@@ -198,12 +221,13 @@ public class TwitterController implements InitializingBean {
     		User user = (User) marshaller.unmarshal(new StreamSource(
     					new StringReader(responseBodyUser.toString())));
     		currentTwitterUsername = user.getName();
-    		connectedMode = "connected";
+    		connected = true;
     	}
     	
 		model.put("isOAuthEnabled", this.isOAuthEnabled());
 		model.put("currentTwitterUsername", currentTwitterUsername);
-		model.put("connectedMode", connectedMode);
+		model.put("connectedMode", connected);
+		model.put("twitterTweetsNumber", twitterTweetsNumber);
 		
 		return new ModelAndView("edit", model);
 	}
@@ -214,12 +238,9 @@ public class TwitterController implements InitializingBean {
             @RequestParam(value = "twitterUsername", required = true) String twitterUsername,
             ActionRequest request, ActionResponse response) throws Exception {
     	
-        PortletPreferences prefs = request.getPreferences();
-       
-        ModelMap model = new ModelMap();
-        
         // validate the submitted data
         if (StringUtils.hasText(twitterUsername) && StringUtils.hasLength(twitterUsername)) {
+        	PortletPreferences prefs = request.getPreferences();
         	prefs.setValue(PREF_TWITTER_USER_TOKEN, null);
         	prefs.setValue(PREF_TWITTER_USER_SECRET, null);
         	prefs.setValue(PREF_TWITTER_USERNAME, twitterUsername);
@@ -235,12 +256,7 @@ public class TwitterController implements InitializingBean {
             @RequestParam(value = "twitterAccessTokenSecret", required = true) String twitterAccessTokenSecret,
             @RequestParam(value = "twitterPin", required = true) String twitterPin,
             ActionRequest request, ActionResponse response) throws Exception {
-    	
-        PortletPreferences prefs = request.getPreferences();
-       
-        ModelMap model = new ModelMap();
-        
-    	Scanner in = new Scanner(System.in);
+
     	Verifier verifier = new Verifier(twitterPin);
     	Token requestToken = new Token(twitterAccessToken, twitterAccessTokenSecret);
     	
@@ -253,6 +269,7 @@ public class TwitterController implements InitializingBean {
     	}
     	
     	if(accessToken != null) {
+            PortletPreferences prefs = request.getPreferences();
     		prefs.setValue(PREF_TWITTER_USERNAME, "");
     		prefs.setValue(PREF_TWITTER_USER_TOKEN, accessToken.getToken());
     		prefs.setValue(PREF_TWITTER_USER_SECRET, accessToken.getSecret());
@@ -260,6 +277,28 @@ public class TwitterController implements InitializingBean {
     	}
     	
     	return;
+	}
+    
+    @RequestMapping(value = {"EDIT"}, params = {"action=setTwitterTweetsNumber"})
+    public void setTwitterTweetsNumber(
+            @RequestParam(value = "twitterTweetsNumber", required = true) String twitterTweetsNumber,
+            ActionRequest request, ActionResponse response) throws Exception {
+
+        // validate the submitted data
+        if (StringUtils.hasText(twitterTweetsNumber) && StringUtils.hasLength(twitterTweetsNumber)) {
+        	int twitterTweetsNumberInt = -1;
+        	try {
+        		twitterTweetsNumberInt = (new Integer(twitterTweetsNumber)).intValue();
+        	} catch (Exception ex) {
+        	}
+        	if(twitterTweetsNumberInt > 0) {
+        		PortletPreferences prefs = request.getPreferences();
+        		prefs.setValue(PREF_TWITTER_TWEETS_NUMBER, twitterTweetsNumber);
+        		prefs.store();
+        	}
+        }
+
+        return;
 	}
     
     

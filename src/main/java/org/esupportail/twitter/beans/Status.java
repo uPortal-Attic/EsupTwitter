@@ -17,10 +17,12 @@
 
 package org.esupportail.twitter.beans;
 
+import java.io.Serializable;
 
+public class Status implements Serializable {
 
-public class Status {
-
+	  private static final long serialVersionUID = 1L;
+	
 	  private String created_at;
 	  private String id;
 	  private String text;
