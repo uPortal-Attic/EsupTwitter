@@ -1,8 +1,8 @@
 <%--
 
-    Copyright (C) 2010 Esup Portail http://www.esup-portail.org
-    Copyright (C) 2010 UNR RUNN http://www.unr-runn.fr
-    @Author (C) 2010 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
+    Copyright (C) 2012 Esup Portail http://www.esup-portail.org
+    Copyright (C) 2012 UNR RUNN http://www.unr-runn.fr
+    @Author (C) 2012 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
     limitations under the License.
 
 --%>
-
 <%@ page contentType="text/html" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
