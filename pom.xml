@@ -9,6 +9,10 @@
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines of twitter.com</description>
 
+    <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <repositories>
       <repository>
 	<id>esup-snapshots</id>
@@ -181,11 +185,12 @@
     </dependencies>
     
     <build>
-        <finalName>${pom.artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+		<version>2.5.1</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -194,6 +199,7 @@
             		     <plugin>
 		       <groupId>com.mycila.maven-license-plugin</groupId>
 		       <artifactId>maven-license-plugin</artifactId>
+		       <version>1.9.0</version>
 		       <configuration>
 			 <header>src/etc/header.txt</header>
 			 <includes>
