@@ -206,6 +206,7 @@
 			   <include>src/main/java/org/esupportail/twitter/**</include>
 			   <include>src/main/webapp/**</include>
 			   <include>src/main/resources/**</include>
+			   <include>doc/**</include>
 			 </includes>
 		       </configuration>
 		     </plugin>
