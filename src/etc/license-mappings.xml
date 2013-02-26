@@ -15,7 +15,7 @@
     <artifact>
         <groupId>org.esupportail</groupId>
         <artifactId>EsupTwitter</artifactId>
-        <version>0.6</version>
+        <version>0.7</version>
 	<license>Apache License, Version 2.0</license>
     </artifact>
     <artifact>
