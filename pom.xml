@@ -4,7 +4,7 @@
     <groupId>org.esupportail</groupId>
     <artifactId>EsupTwitter</artifactId>
     <packaging>war</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines of twitter.com</description>
@@ -35,6 +35,20 @@
 	</releases>
       </repository>
     </repositories>
+
+    <distributionManagement>
+      <repository>
+	<id>mvn.esup-portail.org</id>
+	<name>esup-portail</name>
+	<url>https://mvn.esup-portail.org/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+	<id>mvn.esup-portail.org</id>
+	<name>esup-portail</name>
+	<url>https://mvn.esup-portail.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+    </distributionManagement>
+
 
     <dependencies>
 
