@@ -14,6 +14,18 @@
     
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines from twitter.com</description>
+    <url>http://www.jasig.org</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/Jasig/EsupTwitter.git</connection>
+        <developerConnection>scm:git:git@github.com:Jasig/EsupTwitter.git</developerConnection>
+        <url>https://github.com/Jasig/EsupTwitter</url>
+    </scm>
+
+    <issueManagement>
+        <url>${jasig-issues-base}/ETPLT</url>
+        <system>${jasig-issues-system}</system>
+    </issueManagement>
 
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
