@@ -24,7 +24,7 @@ This project includes:
   esup-commons-springmvc-portlet under GNU General Public License
   esup-commons-web under GNU General Public License
   esup-uportal-ws-client under GNU General Public License
-  EsupTwitter under Apache License, Version 2.0
+  EsupTwitter under Apache License Version 2.0
   HttpClient under Apache License
   ICU4J under ICU License
   IO under The Apache Software License, Version 2.0
@@ -60,3 +60,4 @@ This project includes:
   spring-webmvc under Apache License, Version 2.0
   standard under Apache License, Version 2.0
   XStream Core under BSD style
+
