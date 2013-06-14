@@ -66,8 +66,6 @@ public class TwitterController implements InitializingBean {
     
     protected OAuthService service;
     
-
-	//@Override
 	public void afterPropertiesSet() throws Exception {
 		if(oAuthTwitterConfig != null && !oAuthTwitterConfig.getConsumerKey().isEmpty() && !oAuthTwitterConfig.getConsumerSecret().isEmpty()) {
 			service = new ServiceBuilder().provider(TwitterApi.class)
@@ -122,7 +120,7 @@ public class TwitterController implements InitializingBean {
     		if (twitter.isAuthorized()) {
  			
     			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
-    			List<Tweet> tweetList = twitter.timelineOperations().getUserTimeline(tweetsNumber);
+    			List<Tweet> tweetList = twitter.timelineOperations().getHomeTimeline(tweetsNumber);
     			
     			model.put("tweetList", tweetList);
     			model.put("twitterProfile", twitterProfile);
