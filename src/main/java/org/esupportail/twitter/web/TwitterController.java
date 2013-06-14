@@ -27,6 +27,7 @@ import javax.portlet.RenderResponse;
 
 import org.apache.log4j.Logger;
 import org.esupportail.twitter.beans.OAuthTwitterConfig;
+import org.esupportail.twitter.services.OAuthTwitterApplicationOnlyService;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
@@ -62,17 +63,22 @@ public class TwitterController implements InitializingBean {
     
     @Autowired
     protected OAuthTwitterConfig oAuthTwitterConfig;
+    
+    @Autowired
+    OAuthTwitterApplicationOnlyService oAuthTwitterApplicationOnlyService;
  
     
     protected OAuthService service;
     
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() throws Exception {		
 		if(oAuthTwitterConfig != null && !oAuthTwitterConfig.getConsumerKey().isEmpty() && !oAuthTwitterConfig.getConsumerSecret().isEmpty()) {
 			service = new ServiceBuilder().provider(TwitterApi.class)
 			.apiKey(oAuthTwitterConfig.getConsumerKey())
 			.apiSecret(oAuthTwitterConfig.getConsumerSecret())
 			// .callback(oAuthTwitterConfig.getCallbackUrl())
 			.build();
+		} else {
+			new Exception("You have to setup twitterConfig.xml and register your EsupTwitter on https://dev.twitter.com/apps");
 		}
 	}
 	
@@ -88,50 +94,41 @@ public class TwitterController implements InitializingBean {
     	ModelMap model = new ModelMap();
     	
     	final PortletPreferences prefs = request.getPreferences();
-    	String twitterUsername = prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME);
-    	//String twitterPassword = prefs.getValue(PREF_TWITTER_PASSWORD, null);
+    	String twitterUsername = prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME);	
+    	
+    	String applicationOnlyBearerToken = oAuthTwitterApplicationOnlyService.getApplicationOnlyBearerToken();
     	
     	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
     	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
     	
     	int tweetsNumber = (new Integer(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"))).intValue();	
-    	
-    	if(!this.isOAuthEnabled() || !(twitterUserToken != null && StringUtils.hasLength(twitterUserToken)) ) {
-    		// get simple username timeline (anonymous connection -> restTemplate can be used)
-    			Twitter twitter = new TwitterTemplate();
-    			
-    			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile(twitterUsername);
-    			
-    			List<Tweet> tweetList = twitter.timelineOperations().getUserTimeline(twitterProfile.getId(), tweetsNumber);
-    			
-    			model.put("tweetList", tweetList);
-    			model.put("twitterProfile", twitterProfile);
-    			
-    			response.setTitle("Twitter " + twitterProfile.getScreenName());
-    			
-    	} else {
-    		// get username timeline with oAuth authentication
-    		log.debug("twitterUserToken:" + twitterUserToken);
-    		log.debug("twitterUserSecret:" + twitterUserSecret);
-    		
-    		// Token accessToken = new Token(twitterUserToken, twitterUserSecret);
-    		Twitter twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
 
-    		if (twitter.isAuthorized()) {
- 			
-    			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
-    			List<Tweet> tweetList = twitter.timelineOperations().getHomeTimeline(tweetsNumber);
-    			
-    			model.put("tweetList", tweetList);
-    			model.put("twitterProfile", twitterProfile);
-    			
-    			response.setTitle("Twitter " + twitterProfile.getScreenName());
-    			
-    		} else {
-    			return new ModelAndView("error", model);
-    		}
+    	// get username timeline with oAuth authentication
+    	log.debug("twitterUserToken:" + twitterUserToken);
+    	log.debug("twitterUserSecret:" + twitterUserSecret);
+    	
+    	Twitter twitter;
+    	TwitterProfile twitterProfile;
+    	List<Tweet> tweetList;
+    	
+    	if(twitterUserToken != null && twitterUserSecret != null) {
+    		twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
+        	twitterProfile = twitter.userOperations().getUserProfile();   			
+        	tweetList = twitter.timelineOperations().getHomeTimeline(tweetsNumber);
+    	} else {
+    		twitter = new TwitterTemplate(applicationOnlyBearerToken);
+        	twitterProfile = twitter.userOperations().getUserProfile(twitterUsername);   			
+        	tweetList = twitter.timelineOperations().getUserTimeline(twitterUsername, tweetsNumber);
     	}
-        return new ModelAndView("view", model);
+
+    	model.put("tweetList", tweetList);
+    	model.put("twitterProfile", twitterProfile);
+
+    	response.setTitle("Twitter " + twitterProfile.getScreenName());
+
+    		// return new ModelAndView("error", model);
+    	 
+    	return new ModelAndView("view", model);
     }
     
     @RequestMapping("EDIT")

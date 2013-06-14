@@ -18,7 +18,7 @@
 package org.esupportail.twitter.beans;
 
 public class OAuthTwitterConfig {
-
+	
 	private String consumerKey;
 	  
 	private String consumerSecret;

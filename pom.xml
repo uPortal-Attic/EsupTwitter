@@ -163,9 +163,15 @@
 	<dependency>
 		<groupId>org.springframework.social</groupId>
 		<artifactId>spring-social-twitter</artifactId>
-		<version>1.0.3.RELEASE</version>
+		<version>1.0.5.RELEASE</version>
 	</dependency>
 
+	<dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20090211</version>
+	</dependency>
+            
     </dependencies>
     
     <build>
