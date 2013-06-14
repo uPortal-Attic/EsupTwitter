@@ -10,7 +10,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>esup-twitter</artifactId>
     <packaging>war</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9</version>
     
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines from twitter.com</description>
