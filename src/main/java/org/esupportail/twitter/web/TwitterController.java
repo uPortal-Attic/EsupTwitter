@@ -29,10 +29,7 @@ import org.apache.log4j.Logger;
 import org.esupportail.twitter.beans.OAuthTwitterConfig;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
 import org.scribe.model.Token;
-import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.springframework.beans.factory.InitializingBean;
@@ -122,7 +119,7 @@ public class TwitterController implements InitializingBean {
     		// Token accessToken = new Token(twitterUserToken, twitterUserSecret);
     		Twitter twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
 
-    		if (twitter != null) {
+    		if (twitter.isAuthorized()) {
  			
     			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
     			List<Tweet> tweetList = twitter.timelineOperations().getUserTimeline(tweetsNumber);
@@ -138,14 +135,6 @@ public class TwitterController implements InitializingBean {
     	}
         return new ModelAndView("view", model);
     }
-	
-	private String requestTwitterUrl(Token accessToken, String protectedUrl) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, protectedUrl);
-		service.signRequest(accessToken, request);
-		Response response = request.send();
-		return response.getBody();
-	}
-
     
     @RequestMapping("EDIT")
 	public ModelAndView renderEditView(RenderRequest request, RenderResponse response) throws Exception {
