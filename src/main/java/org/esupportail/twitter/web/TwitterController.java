@@ -20,7 +20,6 @@ package org.esupportail.twitter.web;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -29,14 +28,10 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.CatchTag;
 import org.esupportail.twitter.beans.OAuthTwitterConfig;
 import org.esupportail.twitter.beans.Status;
 import org.esupportail.twitter.beans.User;
-import org.esupportail.twitter.xstream.EsupXStreamMarshaller;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthRequest;
@@ -47,14 +42,16 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.client.CommonsClientHttpRequestFactory;
+import org.springframework.social.twitter.api.Tweet;
+import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.portlet.ModelAndView;
 
 @Controller
@@ -74,31 +71,12 @@ public class TwitterController implements InitializingBean {
     
     @Autowired
     protected OAuthTwitterConfig oAuthTwitterConfig;
-    
-    private RestTemplate restTemplate;
-    
-    /**
-     * we use directly unmarshaller (and no restTemplate) for oauth request ...
-     */
-    @Autowired
-    protected EsupXStreamMarshaller marshaller;
+ 
     
     protected OAuthService service;
     
-    @Autowired
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-		CommonsClientHttpRequestFactory factory = (CommonsClientHttpRequestFactory)restTemplate.getRequestFactory(); 
-		HttpClient client = factory.getHttpClient();
-		
-		// without this we have a WARN : Illegal domain attribute ".twitter.com". Domain of origin: "twitter.com"
-		client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		
-		client.getParams().setSoTimeout(50000);
-	}
 
-
-	@Override
+	//@Override
 	public void afterPropertiesSet() throws Exception {
 		if(oAuthTwitterConfig != null && !oAuthTwitterConfig.getConsumerKey().isEmpty() && !oAuthTwitterConfig.getConsumerSecret().isEmpty()) {
 			service = new ServiceBuilder().provider(TwitterApi.class)
@@ -131,52 +109,34 @@ public class TwitterController implements InitializingBean {
     	
     	if(!this.isOAuthEnabled() || !(twitterUserToken != null && StringUtils.hasLength(twitterUserToken)) ) {
     		// get simple username timeline (anonymous connection -> restTemplate can be used)
-    		try {
-    			User user = restTemplate.getForObject("http://api.twitter.com/1/users/show/{username}.xml", User.class, twitterUsername);
-    			List<Status> statusList = restTemplate.getForObject("http://api.twitter.com/1/statuses/user_timeline.xml?id={username}", ArrayList.class, twitterUsername);
-    			if(tweetsNumber == -1)
-    				tweetsNumber = statusList.size();
-    			else 
-    				tweetsNumber = Math.min(tweetsNumber, statusList.size());
-    			statusList = statusList.subList(0, tweetsNumber);
+    			Twitter twitter = new TwitterTemplate();
     			
-    			model.put("user", user);
-    			model.put("statusList", statusList);
+    			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile(twitterUsername);
     			
-    			response.setTitle("Twitter " + user.getScreen_name());
+    			List<Tweet> tweetList = twitter.timelineOperations().getUserTimeline(twitterProfile.getId(), tweetsNumber);
     			
-    		} catch(HttpClientErrorException e) {
-    			return new ModelAndView("error", model);
-    		}
+    			model.put("tweetList", tweetList);
+    			model.put("twitterProfile", twitterProfile);
+    			
+    			response.setTitle("Twitter " + twitterProfile.getScreenName());
+    			
     	} else {
     		// get username timeline with oAuth authentication
     		log.debug("twitterUserToken:" + twitterUserToken);
     		log.debug("twitterUserSecret:" + twitterUserSecret);
-    		Token accessToken = new Token(twitterUserToken, twitterUserSecret);
-    		if (accessToken != null) {
+    		
+    		// Token accessToken = new Token(twitterUserToken, twitterUserSecret);
+    		Twitter twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
 
-    			String twitterUserUrl = "http://api.twitter.com/1/account/verify_credentials.xml";
-    			String responseBodyUser = requestTwitterUrl(accessToken,
-    					twitterUserUrl);
-    			User user = (User) marshaller.unmarshal(new StreamSource(
-    					new StringReader(responseBodyUser.toString())));
-
-    			String twitterstatusListUrl = "http://api.twitter.com/1/statuses/home_timeline.xml";
-    			String responseBodyStatusList = requestTwitterUrl(
-    					accessToken, twitterstatusListUrl);
-    			List<Status> statusList = (List<Status>) marshaller
-    			.unmarshal(new StreamSource(new StringReader(
-    					responseBodyStatusList.toString())));
-    			if(tweetsNumber == -1)
-    				tweetsNumber = statusList.size();
-    			else 
-    				tweetsNumber = Math.min(tweetsNumber, statusList.size());
-    			statusList = statusList.subList(0, tweetsNumber);
-
-    			model.put("user", user);
-    			model.put("statusList", statusList);
+    		if (twitter != null) {
+ 			
+    			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
+    			List<Tweet> tweetList = twitter.timelineOperations().getUserTimeline(tweetsNumber);
     			
-    			response.setTitle("Twitter " + user.getScreen_name());
+    			model.put("tweetList", tweetList);
+    			model.put("twitterProfile", twitterProfile);
+    			
+    			response.setTitle("Twitter " + twitterProfile.getScreenName());
     			
     		} else {
     			return new ModelAndView("error", model);
@@ -214,13 +174,9 @@ public class TwitterController implements InitializingBean {
     	String twitterTweetsNumber = prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1");
     	
     	if(twitterUserToken!=null) {
-    		Token accessToken = new Token(twitterUserToken, twitterUserSecret);
-    		String twitterUserUrl = "http://api.twitter.com/1/account/verify_credentials.xml";
-    		String responseBodyUser = requestTwitterUrl(accessToken,
-    					twitterUserUrl);
-    		User user = (User) marshaller.unmarshal(new StreamSource(
-    					new StringReader(responseBodyUser.toString())));
-    		currentTwitterUsername = user.getName();
+    		Twitter twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
+			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
+    		currentTwitterUsername = twitterProfile.getName();
     		connected = true;
     	}
     	
