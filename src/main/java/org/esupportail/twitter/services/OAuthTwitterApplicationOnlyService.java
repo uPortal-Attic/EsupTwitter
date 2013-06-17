@@ -2,23 +2,19 @@ package org.esupportail.twitter.services;
 
 
 import org.apache.log4j.Logger;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
 import org.esupportail.twitter.beans.OAuthTwitterConfig;
 import org.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.social.RejectedAuthorizationException;
 import org.springframework.stereotype.Service;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**   		
  * Anonymous connection is no more possible (even just to display only a user public timeline) 
@@ -88,6 +84,10 @@ public class OAuthTwitterApplicationOnlyService implements InitializingBean {
     		writeRequest(connection, "grant_type=client_credentials");
     		String jsonResponse = readResponse(connection);
     		log.info("jsonResponse of the bearer oauth request : " + jsonResponse);
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
+                log.error("HTTP 403 (Forbidden) returned from Twitter API call for bearer token. Check values of Consumer Key and Consumer Secret in tokens.properties");
+                throw new RejectedAuthorizationException("HTTP 403 (Forbidden) returned attempting to get Twitter API bearer token");
+            }
     		
     		// Parse the JSON response into a JSON mapped object to fetch fields from.
     		JSONObject obj = new JSONObject(jsonResponse);
