@@ -30,6 +30,10 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.esupportail.twitter"/>
 
+    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors"><bean class="org.esupportail.twitter.web.MinimizedStateHandlerInterceptor"/></property>
+    </bean>
+
 	<import resource="twitterConfig.xml"/>
 
 </beans>
