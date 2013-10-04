@@ -20,9 +20,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 
 <div class="portlet-title">
-  <h2>
+  <h3>
     <spring:message code="edit.title"/>
-  </h2>
+  </h3>
 </div>
 
  <c:choose>
