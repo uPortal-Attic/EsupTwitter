@@ -34,12 +34,20 @@
             <value>WEB-INF/context/portlet/twitterPortletContext.xml</value>
         </init-param>
         <!-- See https://dev.twitter.com/docs/rate-limiting/1.1
-        	 Remember to adjust this value if you have multiple instances of the 
-        	 Portlet published or if you have multiple uPortal servers that are 
-        	 sharing the same token 
+        	expiration-cache in seconds
          -->
-        <expiration-cache>15</expiration-cache>
+        <expiration-cache>60</expiration-cache>
+        <!-- 
+             Remember to adjust this value if you have multiple instances of the 
+        	 Portlet published or if you have multiple uPortal servers that are 
+        	 sharing the same token
+        	 portlet.public-scope or PUBLIC vs private scope
+        	 Anyway, this param is tricky here - so we have to test this well ...
+         -->
+         <!-- 
+        <cache-scope>PUBLIC</cache-scope>     
         <cache-scope>PUBLIC</cache-scope>
+         -->
         <supports>
             <mime-type>text/html</mime-type> 
             <portlet-mode>VIEW</portlet-mode>
