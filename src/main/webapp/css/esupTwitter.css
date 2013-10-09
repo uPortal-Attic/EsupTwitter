@@ -1,0 +1,54 @@
+.esupTwitter h3 {
+vertical-align: top;
+}
+
+.esupTwitter h3 img {
+margin-right: 10px;
+}
+
+.esupTwitter .profileImg {
+float: left;
+border-radius: 1em;
+height: 60px;
+margin: 0px 10px 5px 0px;"
+}
+
+.esupTwitter .profilTitle {
+position: relative;
+}
+
+.esupTwitter .profilUrl {
+style="font-size: 90%;"
+}
+
+.esupTwitter .profilDesc {
+	clear: both;
+}
+
+.esupTwitter .esuptwitter-list {
+list-style: none;
+margin-top: 10px;
+}
+
+.esupTwitter .esuptwitter-list > p {
+padding-left: 60px;
+margin-bottom: 0;
+}
+
+.esupTwitter .esuptwitter-list > a > h4 {
+display: block;
+padding-left: 60px;
+padding-bottom: 3px;
+margin-bottom: 0;
+}
+
+.esupTwitter .esuptwitter-list img {
+height: 40px;
+margin-top: 2px;
+border-radius: 1em;
+float:left;
+}
+
+
+
+
