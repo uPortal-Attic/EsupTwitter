@@ -18,12 +18,12 @@
     limitations under the License.
 
 -->
-<portlet-app
-    xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
-    version="1.0"
+<portlet-app 
+	xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+	version="2.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
-                        http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
+    					http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">                         
 
     <portlet>
         <portlet-name>EsupTwitter</portlet-name>
@@ -33,7 +33,13 @@
             <name>contextConfigLocation</name>
             <value>WEB-INF/context/portlet/twitterPortletContext.xml</value>
         </init-param>
-        <expiration-cache>0</expiration-cache>
+        <!-- See https://dev.twitter.com/docs/rate-limiting/1.1
+        	 Remember to adjust this value if you have multiple instances of the 
+        	 Portlet published or if you have multiple uPortal servers that are 
+        	 sharing the same token 
+         -->
+        <expiration-cache>15</expiration-cache>
+        <cache-scope>PUBLIC</cache-scope>
         <supports>
             <mime-type>text/html</mime-type> 
             <portlet-mode>VIEW</portlet-mode>
@@ -42,6 +48,7 @@
             <portlet-mode>ABOUT</portlet-mode>
         </supports>
         <supported-locale>fr</supported-locale>
+		<supported-locale>en</supported-locale>
         <portlet-info>
             <title>EsupTwitter Portlet</title>
             <short-title>EsupTwitter</short-title>
