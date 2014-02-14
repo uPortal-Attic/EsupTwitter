@@ -72,7 +72,7 @@ public class TwitterController implements InitializingBean {
     
 	public void afterPropertiesSet() throws Exception {		
 		if(oAuthTwitterConfig != null && !oAuthTwitterConfig.getConsumerKey().isEmpty() && !oAuthTwitterConfig.getConsumerSecret().isEmpty()) {
-			service = new ServiceBuilder().provider(TwitterApi.class)
+			service = new ServiceBuilder().provider(TwitterApi.SSL.class)
 			.apiKey(oAuthTwitterConfig.getConsumerKey())
 			.apiSecret(oAuthTwitterConfig.getConsumerSecret())
 			// .callback(oAuthTwitterConfig.getCallbackUrl())
