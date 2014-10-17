@@ -103,7 +103,7 @@ public class OAuthTwitterApplicationOnlyService implements InitializingBean {
     		log.debug("jsonResponse of the bearer oauth request : " + jsonResponse);
             if (connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 log.error("HTTP 403 (Forbidden) returned from Twitter API call for bearer token. Check values of Consumer Key and Consumer Secret in tokens.properties");
-                throw new RejectedAuthorizationException("HTTP 403 (Forbidden) returned attempting to get Twitter API bearer token");
+                throw new RejectedAuthorizationException("","HTTP 403 (Forbidden) returned attempting to get Twitter API bearer token");
             }
     		
     		// Parse the JSON response into a JSON mapped object to fetch fields from.
