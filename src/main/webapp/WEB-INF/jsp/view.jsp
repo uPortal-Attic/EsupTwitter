@@ -27,7 +27,7 @@
 <div class="esupTwitter">
 
 <div class="portlet-title wrapper-cms">
-  	<img class="profileImg" src="${twitterProfile.profileImageUrl}" alt="${twitterProfile.name}" />
+  	<img class="profileImg" src="${twitterProfile.extraData['profile_image_url_https']}" alt="${twitterProfile.name}" />
     <h3 class="profilTitle">
     	<a href="https://twitter.com/${twitterProfile.screenName}" title="https://twitter.com/${twitterProfile.screenName}" target="_blank"></a>
     	${twitterProfile.name}, ${twitterProfile.location}
@@ -67,7 +67,7 @@
                 </rx:text>
           		<a href="https://twitter.com/${tweet.retweetedStatus.user.screenName}/status/${tweet.id}" title="https://twitter.com/${tweet.retweetedStatus.user.screenName}/status/${tweet.id}" target="_blank">
 	                <img 
-	                    src="${tweet.retweetedStatus.user.profileImageUrl}"
+	                    src="${tweet.retweetedStatus.user.extraData['profile_image_url_https']}"
 	                    alt="${tweet.retweetedStatus.user.name}"
 	                />
 	                <h4>${tweet.retweetedStatus.user.name}</h4>
@@ -82,7 +82,7 @@
                 </rx:text>
           		<a href="https://twitter.com/${tweet.user.screenName}/status/${tweet.id}" title="https://twitter.com/${tweet.user.screenName}/status/${tweet.id}" target="_blank">
 	                <img 
-	                    src="${tweet.user.profileImageUrl}"
+	                    src="${tweet.user.extraData['profile_image_url_https']}"
 	                    alt="${tweet.user.name}"
 	                />
 	                <h4>${tweet.user.name}</h4>
