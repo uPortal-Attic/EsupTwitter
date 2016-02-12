@@ -29,7 +29,8 @@
     </issueManagement>
 
     <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<ehcache.version>2.4.7</ehcache.version>
     </properties>
 
     <dependencyManagement>
@@ -170,6 +171,27 @@
 		<groupId>org.springframework.social</groupId>
 		<artifactId>spring-social-twitter</artifactId>
 		<version>1.1.0.RELEASE</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>net.sf.ehcache</groupId>
+		<artifactId>ehcache-core</artifactId>
+		<version>${ehcache.version}</version>
+	</dependency>
+<dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+	<dependency>
+		<groupId>org.aspectj</groupId>
+		<artifactId>aspectjweaver</artifactId>
+		<version>1.7.1</version>
 	</dependency>
 
 	<dependency>

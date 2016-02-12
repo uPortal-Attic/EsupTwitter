@@ -26,19 +26,12 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.apache.log4j.Logger;
-import org.esupportail.twitter.beans.OAuthTwitterConfig;
-import org.esupportail.twitter.services.OAuthTwitterApplicationOnlyService;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TwitterApi;
+import org.esupportail.twitter.services.TwitterService;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.TwitterProfile;
-import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -47,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
 
 @Controller
-public class TwitterController implements InitializingBean {
+public class TwitterController {
 
 	private static Logger log = Logger.getLogger(TwitterController.class);
 	
@@ -60,43 +53,16 @@ public class TwitterController implements InitializingBean {
     
     private static final String PREF_TWITTER_TWEETS_NUMBER = "twitterTweetsNumber";
     
-    
     @Autowired
-    protected OAuthTwitterConfig oAuthTwitterConfig;
+    TwitterService twitterService;
     
-    @Autowired
-    OAuthTwitterApplicationOnlyService oAuthTwitterApplicationOnlyService;
- 
-    
-    protected OAuthService service;
-    
-	public void afterPropertiesSet() throws Exception {		
-		if(oAuthTwitterConfig != null && !oAuthTwitterConfig.getConsumerKey().isEmpty() && !oAuthTwitterConfig.getConsumerSecret().isEmpty()) {
-			service = new ServiceBuilder().provider(TwitterApi.SSL.class)
-			.apiKey(oAuthTwitterConfig.getConsumerKey())
-			.apiSecret(oAuthTwitterConfig.getConsumerSecret())
-			// .callback(oAuthTwitterConfig.getCallbackUrl())
-			.build();
-		} else {
-			new Exception("You have to setup twitterConfig.xml and register your EsupTwitter on https://dev.twitter.com/apps");
-		}
-	}
-	
-	public boolean isOAuthEnabled() {
-		return service != null;
-	}
-	
-	
-
     @RequestMapping("VIEW")
     protected ModelAndView renderView(RenderRequest request, RenderResponse response) throws Exception {
-        
+            	
     	ModelMap model = new ModelMap();
     	
     	final PortletPreferences prefs = request.getPreferences();
     	String twitterUsername = prefs.getValue(PREF_TWITTER_USERNAME, DEFAULT_TWITTER_USERNAME);	
-    	
-    	String applicationOnlyBearerToken = oAuthTwitterApplicationOnlyService.getApplicationOnlyBearerToken();
     	
     	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
     	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
@@ -107,18 +73,15 @@ public class TwitterController implements InitializingBean {
     	log.debug("twitterUserToken:" + twitterUserToken);
     	log.debug("twitterUserSecret:" + twitterUserSecret);
     	
-    	Twitter twitter;
     	TwitterProfile twitterProfile;
     	List<Tweet> tweetList;
     	
     	if(twitterUserToken != null && twitterUserSecret != null) {
-    		twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
-        	twitterProfile = twitter.userOperations().getUserProfile();   			
-        	tweetList = twitter.timelineOperations().getHomeTimeline(tweetsNumber);
+        	twitterProfile = twitterService.getUserProfile(twitterUserToken, twitterUserSecret);   			
+        	tweetList = twitterService.getHomeTimeline(twitterUserToken, twitterUserSecret,tweetsNumber);
     	} else {
-    		twitter = new TwitterTemplate(applicationOnlyBearerToken);
-        	twitterProfile = twitter.userOperations().getUserProfile(twitterUsername);   			
-        	tweetList = twitter.timelineOperations().getUserTimeline(twitterUsername, tweetsNumber);
+        	twitterProfile = twitterService.getUserProfile(twitterUsername);   			
+        	tweetList = twitterService.getUserTimeline(twitterUsername, tweetsNumber);
     	}
 
     	model.put("tweetList", tweetList);
@@ -126,8 +89,6 @@ public class TwitterController implements InitializingBean {
 
     	response.setTitle("Twitter " + twitterProfile.getScreenName());
 
-    		// return new ModelAndView("error", model);
-    	 
     	return new ModelAndView("view", model);
     }
     
@@ -135,8 +96,8 @@ public class TwitterController implements InitializingBean {
 	public ModelAndView renderEditView(RenderRequest request, RenderResponse response) throws Exception {
         final PortletPreferences prefs = request.getPreferences();
         ModelMap model = new ModelMap();
-        if(this.isOAuthEnabled()) {
-			Token requestToken = service.getRequestToken();
+        if(twitterService.isOAuthEnabled()) {
+			Token requestToken = twitterService.getOAuthService().getRequestToken();
 			String twitterAccessToken = requestToken.getToken();
 			String twitterAccessTokenSecret = requestToken.getSecret();
 			model.put("twitterAccessToken", twitterAccessToken);
@@ -152,13 +113,12 @@ public class TwitterController implements InitializingBean {
     	String twitterTweetsNumber = prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1");
     	
     	if(twitterUserToken!=null) {
-    		Twitter twitter = new TwitterTemplate(oAuthTwitterConfig.getConsumerKey(), oAuthTwitterConfig.getConsumerSecret(), twitterUserToken, twitterUserSecret);
-			TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();   			
+			TwitterProfile twitterProfile = twitterService.getUserProfile(twitterUserToken, twitterUserSecret);   			
     		currentTwitterUsername = twitterProfile.getName();
     		connected = true;
     	}
     	
-		model.put("isOAuthEnabled", this.isOAuthEnabled());
+		model.put("isOAuthEnabled", twitterService.isOAuthEnabled());
 		model.put("currentTwitterUsername", currentTwitterUsername);
 		model.put("connectedMode", connected);
 		model.put("twitterTweetsNumber", twitterTweetsNumber);
@@ -196,7 +156,7 @@ public class TwitterController implements InitializingBean {
     	
     	Token accessToken = null;
     	try {
-    		accessToken = service.getAccessToken(requestToken, verifier);
+    		accessToken = twitterService.getOAuthService().getAccessToken(requestToken, verifier);
     	} catch (Exception ex) {
     		log.info("pb retrieving accessToken : maybe the user put a wrong pin code");
     		log.debug("exception when retrieving accessToken : " + ex.getMessage(), ex);
