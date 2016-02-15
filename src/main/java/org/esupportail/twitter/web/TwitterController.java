@@ -53,7 +53,7 @@ public class TwitterController implements InitializingBean {
 	
 	private static final String PREF_TWITTER_USERNAME = "twitterUsername";
 	//private static final String PREF_TWITTER_PASSWORD = "twitterPassword";
-    private static final String DEFAULT_TWITTER_USERNAME = "lavillederouen";
+    private static final String DEFAULT_TWITTER_USERNAME = "apereoorg";
     
     private static final String PREF_TWITTER_USER_TOKEN = "twitterUserToken";
     private static final String PREF_TWITTER_USER_SECRET = "twitterUserSecret";
