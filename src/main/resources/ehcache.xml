@@ -24,12 +24,12 @@
 	<!-- 
 	maxElementsInMemory: Two entries per Twitter screen name retrieved, 
 		multiple instances of bearer token based portlets will each cache
-		two elemets. User configured instances will need many more maxElementsInMemory.
+		two elemets. User configured instances will need high maxElementsInMemory.
 	timeToLiveSeconds: See https://dev.twitter.com/docs/rate-limiting/1.1 to determine maximum 
 		freshness based on how many unique screen names you anticipate
          -->
     <cache name="twitter"
-        maxElementsInMemory="10" eternal="false"
+        maxElementsInMemory="100" eternal="false"
         timeToLiveSeconds="600" overflowToDisk="false"
         memoryStoreEvictionPolicy="LRU"/>
     
