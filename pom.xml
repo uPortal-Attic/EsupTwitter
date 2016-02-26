@@ -10,7 +10,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>esup-twitter</artifactId>
     <packaging>war</packaging>
-    <version>0.14-SNAPSHOT</version>
+    <version>0.14</version>
     
     <name>EsupTwitter</name>
     <description>EsupTwitter : display timelines from twitter.com</description>
@@ -20,7 +20,7 @@
         <connection>scm:git:git://github.com/Jasig/EsupTwitter.git</connection>
         <developerConnection>scm:git:git@github.com:Jasig/EsupTwitter.git</developerConnection>
         <url>https://github.com/Jasig/EsupTwitter</url>
-      <tag>HEAD</tag>
+      <tag>esup-twitter-0.14</tag>
   </scm>
 
     <issueManagement>
