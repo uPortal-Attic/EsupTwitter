@@ -36,9 +36,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CachingTwitterService implements TwitterService {
-
-	private Logger log = Logger.getLogger(this.getClass());
-	
 	@Autowired
     private OAuthTwitterConfig oAuthTwitterConfig;
 	
@@ -55,7 +52,7 @@ public class CachingTwitterService implements TwitterService {
 			.apiSecret(oAuthTwitterConfig.getConsumerSecret())
 			.build();
 		} else {
-			new Exception("You have to setup twitterConfig.xml and register your EsupTwitter on https://dev.twitter.com/apps");
+			throw new Exception("You have to setup twitterConfig.xml and register your EsupTwitter on https://dev.twitter.com/apps");
 		}
 	}
 	

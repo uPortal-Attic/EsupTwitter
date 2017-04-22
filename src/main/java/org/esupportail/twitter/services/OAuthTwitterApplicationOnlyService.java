@@ -75,7 +75,7 @@ public class OAuthTwitterApplicationOnlyService implements InitializingBean {
     		return new String(encodedBytes);  
     	}
     	catch (UnsupportedEncodingException e) {
-    		return new String();
+    		return "";
     	}
     }
     
@@ -125,33 +125,44 @@ public class OAuthTwitterApplicationOnlyService implements InitializingBean {
     
     
  // Writes a request to a connection
-    private static boolean writeRequest(HttpURLConnection connection, String textBody) {
+    private static boolean writeRequest(HttpURLConnection connection, String textBody) throws IOException {
+		BufferedWriter wr = null;
     	try {
-    		BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+    		wr = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
     		wr.write(textBody);
     		wr.flush();
-    		wr.close();
     			
     		return true;
     	}
     	catch (IOException e) { 
     		return false; 
     	}
-    }
+    	finally {
+    		if (wr != null) {
+    			wr.close();
+			}
+		}
+	}
     	
     	
     // Reads a response for a given connection and returns it as a string.
-    private static String readResponse(HttpURLConnection connection) {
+    private static String readResponse(HttpURLConnection connection) throws IOException {
+		BufferedReader br = null;
     	try {
     		StringBuilder str = new StringBuilder();
     			
-    		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    		br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
     		String line = "";
     		while((line = br.readLine()) != null) {
     			str.append(line + System.getProperty("line.separator"));
     		}
     		return str.toString();
     	}
-    	catch (IOException e) { return new String(); }
-    }
+    	catch (IOException e) { return ""; }
+    	finally {
+    		if (br != null) {
+    			br.close();
+			}
+		}
+	}
 }

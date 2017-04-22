@@ -67,7 +67,7 @@ public class TwitterController {
     	String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
     	String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);	
     	
-    	int tweetsNumber = (new Integer(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"))).intValue();	
+    	int tweetsNumber = Integer.parseInt(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"));
 
     	// get username timeline with oAuth authentication
     	log.debug("twitterUserToken:" + twitterUserToken);
@@ -182,7 +182,7 @@ public class TwitterController {
         if (StringUtils.hasText(twitterTweetsNumber) && StringUtils.hasLength(twitterTweetsNumber)) {
         	int twitterTweetsNumberInt = -1;
         	try {
-        		twitterTweetsNumberInt = (new Integer(twitterTweetsNumber)).intValue();
+        		twitterTweetsNumberInt = Integer.parseInt(twitterTweetsNumber);
         	} catch (Exception ex) {
         	}
         	if(twitterTweetsNumberInt > 0) {
