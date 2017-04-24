@@ -77,7 +77,7 @@ public class MinimizedStateHandlerInterceptor  extends HandlerInterceptorAdapter
             String twitterUserToken = prefs.getValue(PREF_TWITTER_USER_TOKEN, null);
             String twitterUserSecret = prefs.getValue(PREF_TWITTER_USER_SECRET, null);
             
-            int tweetsNumber = (new Integer(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"))).intValue();  
+            int tweetsNumber = Integer.parseInt(prefs.getValue(PREF_TWITTER_TWEETS_NUMBER, "-1"));
 
             // get username timeline with oAuth authentication
             log.debug("twitterUserToken:" + twitterUserToken);
