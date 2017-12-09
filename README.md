@@ -1,5 +1,6 @@
 # ESUP Twitter Portlet
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/esup-twitter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/esup-twitter)
 [![Linux Build Status](https://travis-ci.org/Jasig/EsupTwitter.svg?branch=master)](https://travis-ci.org/Jasig/EsupTwitter)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/dbshq4g2ve4eempo/branch/master?svg=true)](https://ci.appveyor.com/project/ChristianMurphy/esuptwitter/branch/master)
 
