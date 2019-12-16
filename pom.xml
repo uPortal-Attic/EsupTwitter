@@ -51,7 +51,7 @@
 	    		<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<type>jar</type>
-				<version>1.2.16</version>
+				<version>1.2.17</version>
 			</dependency>
 			<dependency>
 	            <groupId>javax.servlet</groupId>
